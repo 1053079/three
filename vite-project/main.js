@@ -47,11 +47,52 @@ function addStar() {
   star.position.set(x, y ,z);
   scene.add(star);
 }
+// Adds stars //
 Array(200).fill().forEach(addStar);
 
+// Background //
 const spaceTexture = new THREE.TextureLoader().load('space.jpg');
 scene.background= spaceTexture;
 
+// // box in middle //
+const testTexture = new THREE.TextureLoader().load('testTexture.jpg');
+
+const test = new THREE.Mesh(
+  new THREE.BoxGeometry(3,3,3),
+  new THREE.MeshBasicMaterial({ map: testTexture})
+)
+
+scene.add(test);
+
+const moonTexture = new THREE.TextureLoader().load('moon.jpg');
+const normalTexture = new THREE.TextureLoader().load('normal.jpg');
+
+const moon = new THREE.Mesh(
+  new THREE.SphereGeometry(3, 32 , 32),
+  new THREE.MeshStandardMaterial({ map:moonTexture,
+    normalMap: normalTexture
+  })
+);
+
+scene.add(moon);
+
+moon.position.z = 30;
+moon.position.setX(-10);
+
+function moveCamera() {
+   const t = document.body.getBoundingClientRect().top;
+   moon.rotation.x += 0.05;
+   moon.rotation.y += 0.075;
+   moon.rotation.z += 0.05;
+
+   test.rotation.x += 0.01;
+   test.rotation.y += 0.01;
+
+   camera.position.x = t * -0.0002;
+   camera.position.y = t * -0.0002;
+   camera.position.z = t * -0.01;
+}
+document.body.onscroll = moveCamera
 const controls = new OrbitControls(camera, renderer.domElement);
 // animates the object rotating.
 function animate() {
