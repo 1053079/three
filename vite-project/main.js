@@ -47,8 +47,23 @@ function addStar() {
   star.position.set(x, y ,z);
   scene.add(star);
 }
+
+function addYeastKen () {
+  const texture = new THREE.TextureLoader().load('yeast.png');
+  const material = new THREE.MeshBasicMaterial({ map:texture, transparent: true})
+
+  const geometry = new THREE.PlaneGeometry(1,1);
+
+  const dog = new THREE.Mesh (geometry , material) ;
+
+  const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100));
+
+  dog.position.set (x, y , z)
+  scene.add(dog);
+}
+
 // Adds stars //
-Array(200).fill().forEach(addStar);
+Array(200).fill().forEach(addYeastKen);
 
 // Background //
 const spaceTexture = new THREE.TextureLoader().load('space.jpg');
@@ -93,6 +108,7 @@ function moveCamera() {
    camera.position.z = t * -0.01;
 }
 document.body.onscroll = moveCamera
+
 const controls = new OrbitControls(camera, renderer.domElement);
 // animates the object rotating.
 function animate() {
