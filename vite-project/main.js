@@ -48,19 +48,24 @@ function addStar() {
   scene.add(star);
 }
 
+const dogs = [];
+
 function addYeastKen () {
   const texture = new THREE.TextureLoader().load('yeast.png');
   const material = new THREE.MeshBasicMaterial({ map:texture, transparent: true})
 
   const geometry = new THREE.PlaneGeometry(1,1);
 
-  const dog = new THREE.Mesh (geometry , material) ;
+  const dog = new THREE.Mesh(geometry , material) ;
 
   const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100));
 
   dog.position.set (x, y , z)
   scene.add(dog);
+
+  dogs.push(dog);
 }
+
 
 // Adds stars //
 Array(200).fill().forEach(addYeastKen);
@@ -94,11 +99,35 @@ scene.add(moon);
 moon.position.z = 30;
 moon.position.setX(-10);
 
+// add huge dog
+const dogTexture = new THREE.TextureLoader().load('yeast.png');
+const grassTexture = new THREE.TextureLoader().load('grass.jpg');
+const hugeDog = new THREE.Mesh(
+  new THREE.BoxGeometry(5,5,5),
+  new THREE.MeshStandardMaterial({ map:dogTexture})
+);
+
+scene.add(hugeDog)
+
+hugeDog.position.z = 10;
+hugeDog.position.setX(+20);
+
 function moveCamera() {
    const t = document.body.getBoundingClientRect().top;
    moon.rotation.x += 0.05;
    moon.rotation.y += 0.075;
    moon.rotation.z += 0.05;
+
+    // Loop through all dog instances and rotate them
+    dogs.forEach(dog => {
+      dog.rotation.x += 0.01;
+      dog.rotation.y += 0.0075;
+      dog.rotation.z += 0.005;
+    });
+
+   hugeDog.rotation.x += 0.05;
+   hugeDog.rotation.y += 0.075;
+   hugeDog.rotation.z += 0.05;
 
    test.rotation.x += 0.01;
    test.rotation.y += 0.01;
