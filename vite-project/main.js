@@ -47,7 +47,7 @@ function addStar() {
   star.position.set(x, y ,z);
   scene.add(star);
 }
-
+// make an array of dogs and then we can push the dogs in addYeastKen function to it//
 const dogs = [];
 
 function addYeastKen () {
@@ -63,11 +63,12 @@ function addYeastKen () {
   dog.position.set (x, y , z)
   scene.add(dog);
 
+  // pushes the dogs to global scope //
   dogs.push(dog);
 }
 
 
-// Adds stars //
+// Adds dogs //
 Array(200).fill().forEach(addYeastKen);
 
 // Background //
