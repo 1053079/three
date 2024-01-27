@@ -143,7 +143,7 @@ const hugeDog = new THREE.Mesh(
 );
 
 scene.add(hugeDog)
-
+ // test
 hugeDog.position.z = 10;
 hugeDog.position.setX(+20);
 
