@@ -4,6 +4,8 @@ import * as THREE from 'three';
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+
 // Create the scene //
 const scene = new THREE.Scene();
 // Adds the camera perspective //
@@ -18,6 +20,20 @@ renderer.setSize (window.innerWidth, window.innerHeight)
 camera.position.setZ(30);
 
 renderer.render( scene, camera) ;
+
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load('./sounds/Savior.mp3' , function(buffer) {
+  backgroundSound.setBuffer(buffer);
+  backgroundSound.setLoop(true);
+  backgroundSound.setVolume(0.4);
+  backgroundSound.play();
+})
+
+const backgroundSound = new THREE.Audio(listener);
+
 
 const geometry = new THREE.TorusGeometry(10 , 3 , 16 ,100)
 const material = new THREE.MeshStandardMaterial({color: 0xFF6347}) ;
@@ -75,7 +91,7 @@ Array(200).fill().forEach(addYeastKen);
 const spaceTexture = new THREE.TextureLoader().load('space.jpg');
 scene.background= spaceTexture;
 
-// // box in middle //
+// box in middle //
 const testTexture = new THREE.TextureLoader().load('testTexture.jpg');
 
 const test = new THREE.Mesh(
@@ -113,6 +129,21 @@ scene.add(hugeDog)
 hugeDog.position.z = 10;
 hugeDog.position.setX(+20);
 
+let girl;
+const glftloader = new GLTFLoader();
+glftloader.load('./assets/Jingliu/scene.gltf', (gltfScene) => {
+ girl = gltfScene;
+scene.add(gltfScene.scene);
+gltfScene.scene.position.setZ(+21);
+gltfScene.scene.position.setX(+1);
+gltfScene.scene.position.setY(-0.8);
+
+
+});
+
+
+
+// moves the camera 
 function moveCamera() {
    const t = document.body.getBoundingClientRect().top;
    moon.rotation.x += 0.05;
@@ -149,8 +180,28 @@ function animate() {
   torus.rotation.y += 0.005;
   torus.rotation.z += 0.01;
 
+  
+
+  renderer.render( scene, camera );
+
+ 
+
+
   controls.update();
 
 }
+
+
+
+window.addEventListener('mousemove', (event) => {
+  girl.scene.rotation.y = (event.clientX / window.innerWidth) - 0.7;
+  girl.scene.rotation.x = (event.clientY / window.innerHeight) - 0.7;
+
+
+  // girl.scene.position.x = ((event.clientX / window.innerWidth) - 0.5) * 15;
+  // girl.scene.position.y = ((event.clientY / window.innerHeight) - 0.5) * -15;
+});
+
+
 
 animate();
