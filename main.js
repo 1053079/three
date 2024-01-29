@@ -26,6 +26,7 @@ const listener = new THREE.AudioListener();
 camera.add(listener);
 
 let audioPlaying = false
+let audioPlaying2 = false
 const audioLoader = new THREE.AudioLoader();
 const initAudio = () => {
   if (!audioPlaying) {
@@ -33,6 +34,7 @@ const initAudio = () => {
   positionalSound.setBuffer(buffer);
   positionalSound.setLoop(true);
   positionalSound.setVolume(0.4);
+  positionalSound.setRefDistance(0.6);
   positionalSound.play();
   audioPlaying = true;
 }); 
@@ -41,22 +43,26 @@ const initAudio = () => {
   audioPlaying = false;
 }
   };
-
-    
+  const initAudio2 = () => {
+  if (!audioPlaying2) {
+  audioLoader.load('sounds/Story.mp3' , function(buffer) {
+  positionalSound2.setBuffer(buffer);
+  positionalSound2.setLoop(true);
+  positionalSound2.setVolume(0.4);
+  positionalSound2.setRefDistance(0.2);
+  positionalSound2.play();
+  audioPlaying2 = true;
+}); 
+} else {
+  positionalSound2.pause();
+  audioPlaying2 = false;
+}
+  };
   
-
-
-
-
-// audioLoader.load('./sounds/Story.mp3' , function(buffer) {
-//   positionalSound.setBuffer(buffer);
-//   positionalSound.setLoop(true);
-//   positionalSound.setVolume(0.4);
-//   positionalSound.play();
-// })
 
 // const backgroundSound = new THREE.Audio(listener);
 const positionalSound = new THREE.PositionalAudio(listener);
+const positionalSound2 = new THREE.PositionalAudio(listener);
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
@@ -70,7 +76,8 @@ scene.add(torus)
 
 // Lights up specific parts of the object //
 const pointLight = new THREE.PointLight(0xffffff)
-pointLight.position.set(5,5,5)
+pointLight.position.set(5,12,10)
+pointLight.intensity = 250;
 
 // Lights the whole object up //
 const ambientLight = new THREE.AmbientLight(0xffffff);
@@ -244,12 +251,12 @@ scene.add(overlayMesh);
 overlayMesh.add(positionalSound)
 
 // overlay Astronaut
-// const overlayGeometry2 = new THREE.BoxGeometry(1, 1.8, 1); // Adjust size as needed
-// const overlayMaterial2 = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
-// const overlayMesh2 = new THREE.Mesh(overlayGeometry2, overlayMaterial2);
-// overlayMesh2.position.set(-1,-0.5, 37.5); // Adjust position relative to your GLTF model
-// scene.add(overlayMesh2);
-// overlayMesh2.add(positionalSound)
+const overlayGeometry2 = new THREE.BoxGeometry(1, 1.8, 1); // Adjust size as needed
+const overlayMaterial2 = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
+const overlayMesh2 = new THREE.Mesh(overlayGeometry2, overlayMaterial2);
+overlayMesh2.position.set(-1,-0.5, 37.5); // Adjust position relative to your GLTF model
+scene.add(overlayMesh2);
+overlayMesh2.add(positionalSound2)
 
 
 
@@ -262,13 +269,18 @@ function onMouseMove(event) {
 function onClick() {
   // Check for intersections with the overlay mesh
   raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObject(overlayMesh);
+  const intersects = raycaster.intersectObjects([overlayMesh, overlayMesh2]);
  
-  if (intersects.length > 0) {
-    console.log('play audio naowww')
+ 
+  if (intersects.length > 0 && intersects[0].object == overlayMesh) {
+    console.log(intersects)
     initAudio();
     }
+  if (intersects.length > 0 && intersects[0].object == overlayMesh2) {
+    console.log('ASTRONAUT')
+    initAudio2();
   }
+  };
 
 
 // Function to switch to another song
