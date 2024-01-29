@@ -25,16 +25,27 @@ renderer.render( scene, camera) ;
 const listener = new THREE.AudioListener();
 camera.add(listener);
 
-
+let audioPlaying = false
 const audioLoader = new THREE.AudioLoader();
 const initAudio = () => {
-audioLoader.load('sounds/Savior.mp3' , function(buffer) {
+  if (!audioPlaying) {
+  audioLoader.load('sounds/Savior.mp3' , function(buffer) {
   positionalSound.setBuffer(buffer);
   positionalSound.setLoop(true);
   positionalSound.setVolume(0.4);
   positionalSound.play();
-})
+  audioPlaying = true;
+}); 
+} else {
+  positionalSound.pause();
+  audioPlaying = false;
 }
+  };
+
+    
+  
+
+
 
 
 // audioLoader.load('./sounds/Story.mp3' , function(buffer) {
