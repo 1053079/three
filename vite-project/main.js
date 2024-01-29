@@ -27,12 +27,15 @@ camera.add(listener);
 
 
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load('./sounds/Savior.mp3' , function(buffer) {
+const initAudio = () => {
+audioLoader.load('sounds/Savior.mp3' , function(buffer) {
   positionalSound.setBuffer(buffer);
   positionalSound.setLoop(true);
   positionalSound.setVolume(0.4);
   positionalSound.play();
 })
+}
+
 
 // audioLoader.load('./sounds/Story.mp3' , function(buffer) {
 //   positionalSound.setBuffer(buffer);
@@ -81,7 +84,7 @@ function addStar() {
 const dogs = [];
 
 function addYeastKen () {
-  const texture = new THREE.TextureLoader().load('yeast.png');
+  const texture = new THREE.TextureLoader().load('images/yeast.png');
   const material = new THREE.MeshBasicMaterial({ map:texture, transparent: true})
 
   const geometry = new THREE.PlaneGeometry(1,1);
@@ -102,11 +105,11 @@ function addYeastKen () {
 Array(200).fill().forEach(addYeastKen);
 
 // Background //
-const spaceTexture = new THREE.TextureLoader().load('space.jpg');
+const spaceTexture = new THREE.TextureLoader().load('images/space.jpg');
 scene.background= spaceTexture;
 
 // box in middle //
-const testTexture = new THREE.TextureLoader().load('testTexture.jpg');
+const testTexture = new THREE.TextureLoader().load('images/testTexture.jpg');
 
 const test = new THREE.Mesh(
   new THREE.BoxGeometry(3,3,3),
@@ -115,8 +118,8 @@ const test = new THREE.Mesh(
 
 scene.add(test);
 // Adds the moon //
-const moonTexture = new THREE.TextureLoader().load('moon.jpg');
-const normalTexture = new THREE.TextureLoader().load('normal.jpg');
+const moonTexture = new THREE.TextureLoader().load('images/moon.jpg');
+const normalTexture = new THREE.TextureLoader().load('images/normal.jpg');
 
 const moon = new THREE.Mesh(
   new THREE.SphereGeometry(3, 32 , 32),
@@ -131,8 +134,8 @@ moon.position.z = 30;
 moon.position.setX(-10);
 
 // add huge dog
-const dogTexture = new THREE.TextureLoader().load('yeast.png');
-const shibaTexture = new THREE.TextureLoader().load('shibaInu.png');
+const dogTexture = new THREE.TextureLoader().load('images/yeast.png');
+const shibaTexture = new THREE.TextureLoader().load('images/shibaInu.png');
 
 const dogMaterial = new THREE.MeshStandardMaterial({ map: dogTexture });
 const shibaMaterial = new THREE.MeshStandardMaterial({ map: shibaTexture });
@@ -280,7 +283,7 @@ function switchSong() {
 
 // Add event listeners
 window.addEventListener('mousemove', onMouseMove, false);
-window.addEventListener('click', switchSong, false);
+window.addEventListener('click', initAudio, false);
 
 window.addEventListener('mousemove', (event) => {
   girl.scene.rotation.y = (event.clientX / window.innerWidth) - 0.7;
