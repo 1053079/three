@@ -34,7 +34,7 @@ const initAudio = () => {
   positionalSound.setBuffer(buffer);
   positionalSound.setLoop(true);
   positionalSound.setVolume(0.4);
-  positionalSound.setRefDistance(0.6);
+  positionalSound.setRefDistance(5);
   positionalSound.play();
   audioPlaying = true;
 }); 
@@ -45,11 +45,11 @@ const initAudio = () => {
   };
   const initAudio2 = () => {
   if (!audioPlaying2) {
-  audioLoader.load('sounds/Story.mp3' , function(buffer) {
+  audioLoader.load('sounds/NPNG.mp3' , function(buffer) {
   positionalSound2.setBuffer(buffer);
   positionalSound2.setLoop(true);
-  positionalSound2.setVolume(0.4);
-  positionalSound2.setRefDistance(0.2);
+  positionalSound2.setVolume(1.5);
+  positionalSound2.setRefDistance(0.5);
   positionalSound2.play();
   audioPlaying2 = true;
 }); 
@@ -77,7 +77,7 @@ scene.add(torus)
 // Lights up specific parts of the object //
 const pointLight = new THREE.PointLight(0xffffff)
 pointLight.position.set(5,12,10)
-pointLight.intensity = 250;
+pointLight.intensity = 750;
 
 // Lights the whole object up //
 const ambientLight = new THREE.AmbientLight(0xffffff);
@@ -230,6 +230,10 @@ function animate() {
   torus.rotation.x += 0.01;
   torus.rotation.y += 0.005;
   torus.rotation.z += 0.01;
+
+  // videoMesh.rotation.x += 0.01;
+  videoMesh.rotation.y += 0.005;
+  // videoMesh.rotation.z += 0.01;
   
   // Astronaut moves all the time 
   if (astronaut) {
@@ -269,7 +273,7 @@ function onMouseMove(event) {
 function onClick() {
   // Check for intersections with the overlay mesh
   raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects([overlayMesh, overlayMesh2]);
+  const intersects = raycaster.intersectObjects([overlayMesh, overlayMesh2, videoMesh]);
  
  
   if (intersects.length > 0 && intersects[0].object == overlayMesh) {
@@ -280,27 +284,31 @@ function onClick() {
     console.log('ASTRONAUT')
     initAudio2();
   }
+  if (intersects.length > 0 && intersects[0].object ==  videoMesh) {
+    console.log('Videooo')
+    initVideo();
+  }
   };
 
 
-// Function to switch to another song
-function switchSong() {
-  if (isAudioPlaying) {
-      // Pause the current audio
-      audioLoader.audio.pause();
+// // Function to switch to another song
+// function switchSong() {
+//   if (isAudioPlaying) {
+//       // Pause the current audio
+//       audioLoader.audio.pause();
 
-      // Load and play the new audio file
-      audioLoader.load('./sounds/Story.mp3', (buffer) => {
-          audio.setBuffer(buffer);
-          audio.play();
-          isAudioPlaying = true;
-      });
+//       // Load and play the new audio file
+//       audioLoader.load('./sounds/Story.mp3', (buffer) => {
+//           audio.setBuffer(buffer);
+//           audio.play();
+//           isAudioPlaying = true;
+//       });
 
-      console.log('Switched to the new song');
-  } else {
-      console.log('No audio playing to switch');
-  }
-}
+//       console.log('Switched to the new song');
+//   } else {
+//       console.log('No audio playing to switch');
+//   }
+// }
 
 
 
@@ -313,5 +321,26 @@ window.addEventListener('mousemove', (event) => {
   girl.scene.rotation.x = (event.clientY / window.innerHeight) - 0.7;
 
 });
+// add video //
+let videoPlaying = false
+let video = document.querySelector('#video');
+  const videoTexture = new THREE.VideoTexture(video)
+  const videoMaterial = new THREE.MeshStandardMaterial({ map: videoTexture });;
+  const videoGeometry = new THREE.BoxGeometry(5, 5, 5)
+
+  const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial)
+
+
+scene.add(videoMesh)
+
+const initVideo = () => {
+  if (!videoPlaying) {
+    video.play();
+    videoPlaying = true;
+  } else {
+    video.pause();
+    videoPlaying = false
+  }
+}
 
 animate();
