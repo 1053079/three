@@ -265,8 +265,8 @@ function onClick() {
   const intersects = raycaster.intersectObject(overlayMesh);
  
   if (intersects.length > 0) {
-  
-    
+    console.log('play audio naowww')
+    initAudio();
     }
   }
 
@@ -294,7 +294,7 @@ function switchSong() {
 
 // Add event listeners
 window.addEventListener('mousemove', onMouseMove, false);
-window.addEventListener('click', initAudio, false);
+window.addEventListener('click', onClick, false);
 
 window.addEventListener('mousemove', (event) => {
   girl.scene.rotation.y = (event.clientX / window.innerWidth) - 0.7;
