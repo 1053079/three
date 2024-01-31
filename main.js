@@ -28,6 +28,7 @@ camera.add(listener);
 let audioPlaying = false
 let audioPlaying2 = false
 const audioLoader = new THREE.AudioLoader();
+
 const initAudio = () => {
   if (!audioPlaying) {
   audioLoader.load('sounds/Savior.mp3' , function(buffer) {
@@ -60,14 +61,15 @@ const initAudio = () => {
   };
   
 
-// const backgroundSound = new THREE.Audio(listener);
+// New variables for positional audio (only works with audioloader?)
+// Also Raycaster and mouse for interacting with Mesh objects
 const positionalSound = new THREE.PositionalAudio(listener);
 const positionalSound2 = new THREE.PositionalAudio(listener);
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 
-// Torus mesh //
+// Creates Torus mesh //
 const geometry = new THREE.TorusGeometry(10 , 3 , 16 ,100)
 const material = new THREE.MeshStandardMaterial({color: 0xFF6347}) ;
 const torus = new THREE.Mesh( geometry, material);
@@ -84,23 +86,25 @@ const ambientLight = new THREE.AmbientLight(0xffffff);
 // adds the lighting to the scene //
 scene.add(pointLight, ambientLight)
 
+// Helps with knowing where the light comes from
 const lightHelper = new THREE.PointLightHelper(pointLight)
 const gridHelper = new THREE.GridHelper(200 , 50)
 scene.add(lightHelper, gridHelper)
 
-function addStar() {
-  const geometry = new THREE.SphereGeometry(0.25, 24, 24);
-  const material = new THREE.MeshStandardMaterial({ color: 0xffffff })
-  const star = new THREE.Mesh (geometry , material) ;
+// function addStar() {
+//   const geometry = new THREE.SphereGeometry(0.25, 24, 24);
+//   const material = new THREE.MeshStandardMaterial({ color: 0xffffff })
+//   const star = new THREE.Mesh (geometry , material) ;
 
-  const [x, y , z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100) );
+//   const [x, y , z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100) );
 
-  star.position.set(x, y ,z);
-  scene.add(star);
-}
+//   star.position.set(x, y ,z);
+//   scene.add(star);
+// }
+
 // make an array of dogs and then we can push the dogs in addYeastKen function to it//
 const dogs = [];
-
+// Adds the dogs into random positions
 function addYeastKen () {
   const texture = new THREE.TextureLoader().load('images/yeast.png');
   const material = new THREE.MeshBasicMaterial({ map:texture, transparent: true})
@@ -117,8 +121,6 @@ function addYeastKen () {
   // pushes the dogs to global scope //
   dogs.push(dog);
 }
-
-
 // Adds dogs //
 Array(200).fill().forEach(addYeastKen);
 
@@ -127,14 +129,15 @@ const spaceTexture = new THREE.TextureLoader().load('images/space.jpg');
 scene.background= spaceTexture;
 
 // box in middle //
-const testTexture = new THREE.TextureLoader().load('images/testTexture.jpg');
+// const testTexture = new THREE.TextureLoader().load('images/testTexture.jpg');
 
-const test = new THREE.Mesh(
-  new THREE.BoxGeometry(3,3,3),
-  new THREE.MeshBasicMaterial({ map: testTexture})
-)
+// const test = new THREE.Mesh(
+//   new THREE.BoxGeometry(3,3,3),
+//   new THREE.MeshBasicMaterial({ map: testTexture})
+// )
 
-scene.add(test);
+// scene.add(test);
+
 // Adds the moon //
 const moonTexture = new THREE.TextureLoader().load('images/moon.jpg');
 const normalTexture = new THREE.TextureLoader().load('images/normal.jpg');
@@ -180,6 +183,17 @@ gltfScene.scene.position.setY(-0.8);
 
 });
 
+// adds Blade //
+let blade;
+glftloader.load('./assets/Blade/scene.gltf', (gltfScene) => {
+ blade = gltfScene;
+scene.add(gltfScene.scene);
+gltfScene.scene.position.setZ(+21);
+gltfScene.scene.position.setX(+1);
+gltfScene.scene.position.setY(-0.8);
+
+});
+
 // Astronaut man
 let astronaut;
 glftloader.load('./assets/astronaut/scene.gltf', (gltfScene) => {
@@ -191,6 +205,17 @@ gltfScene.scene.position.setY(-0.5);
 
 });
 
+// ship
+let ship;
+glftloader.load('./assets/ship/scene.gltf', (gltfScene) => {
+ ship = gltfScene;
+scene.add(gltfScene.scene);
+gltfScene.scene.position.setZ(0);
+gltfScene.scene.position.setX(+10);
+gltfScene.scene.position.setY(+20);
+
+});
+
 // moves the camera 
 function moveCamera() {
    const t = document.body.getBoundingClientRect().top;
@@ -199,7 +224,8 @@ function moveCamera() {
    moon.rotation.x += 0.05;
    moon.rotation.y += 0.075;
    moon.rotation.z += 0.05;
-
+   
+   
     // Loop through all dog instances and rotate them
     dogs.forEach(dog => {
       dog.rotation.x += 0.01;
@@ -212,8 +238,8 @@ function moveCamera() {
    hugeDog.rotation.z += 0.05;
    
    // Rotates cube in middle of Torus when mouse moves
-   test.rotation.x += 0.01;
-   test.rotation.y += 0.01;
+  //  test.rotation.x += 0.01;
+  //  test.rotation.y += 0.01;
 
    camera.position.x = t * -0.0002;
    camera.position.y = t * -0.0002;
@@ -231,16 +257,24 @@ function animate() {
   torus.rotation.y += 0.005;
   torus.rotation.z += 0.01;
 
-  // videoMesh.rotation.x += 0.01;
+  // Rotates Fleeting Wish 
   videoMesh.rotation.y += 0.005;
-  // videoMesh.rotation.z += 0.01;
+  //
+  videoMesh2.rotation.y += 0.005;
+  if (ship) {
+    ship.scene.position.z -= 0.005;
+  }
   
   // Astronaut moves all the time 
   if (astronaut) {
     astronaut.scene.rotation.x += 0.001;
     astronaut.scene.rotation.z += 0.001;
   }
-
+    // Loop through all dog instances and rotate them
+      dogs.forEach(dog => {
+   
+      dog.rotation.z += 0.001;
+    });
   renderer.render( scene, camera );
 
   controls.update();
@@ -273,7 +307,7 @@ function onMouseMove(event) {
 function onClick() {
   // Check for intersections with the overlay mesh
   raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects([overlayMesh, overlayMesh2, videoMesh]);
+  const intersects = raycaster.intersectObjects([overlayMesh, overlayMesh2, videoMesh, videoMesh2]);
  
  
   if (intersects.length > 0 && intersects[0].object == overlayMesh) {
@@ -287,6 +321,10 @@ function onClick() {
   if (intersects.length > 0 && intersects[0].object ==  videoMesh) {
     console.log('Videooo')
     initVideo();
+  }
+  if (intersects.length > 0 && intersects[0].object ==  videoMesh2) {
+    console.log('Videooo 2')
+    initVideo2();
   }
   };
 
@@ -321,26 +359,62 @@ window.addEventListener('mousemove', (event) => {
   girl.scene.rotation.x = (event.clientY / window.innerHeight) - 0.7;
 
 });
-// add video //
+// add video 1 //
 let videoPlaying = false
 let video = document.querySelector('#video');
+// Texture and Material
   const videoTexture = new THREE.VideoTexture(video)
   const videoMaterial = new THREE.MeshStandardMaterial({ map: videoTexture });;
   const videoGeometry = new THREE.BoxGeometry(5, 5, 5)
-
+  // The Video mesh
   const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial)
 
+ // Add Video 2 
+  let videoPlaying2 = false
+  let video2 = document.querySelector('#video2');
+  // Texture and Material for Video 2
+  const videoTexture2 = new THREE.VideoTexture(video2)
 
-scene.add(videoMesh)
+  // Original placeholder thumbnail before video loads
+  const placeholderTexture = new THREE.TextureLoader().load('./images/hikari.jpg')
+  const videoMaterial2 = new THREE.MeshStandardMaterial({ map: placeholderTexture});;
+  // The Video Mesh
+  const videoMesh2 = new THREE.Mesh(videoGeometry, videoMaterial2)
 
+videoMesh2.position.setX(+5);
+videoMesh2.position.setZ(+23);
+scene.add(videoMesh, videoMesh2)
+
+// Function for changing a video thumbnail
+const changeThumbnail = () => {
+  videoMaterial2.map = videoTexture2;
+  videoMaterial2.needsUpdate = true;
+};
+
+
+
+// Function for Video 1 
 const initVideo = () => {
   if (!videoPlaying) {
     video.play();
     videoPlaying = true;
-  } else {
+  }
+  else {
     video.pause();
     videoPlaying = false
   }
 }
+// Function for Video 2
+const initVideo2 = () => { 
+  if (!videoPlaying2) {
+    changeThumbnail();
+    video2.play();
+    videoPlaying2 = true;
+  }
+  else {
+    video2.pause();
+    videoPlaying2 = false
+  }};
 
+// Animates everything
 animate();
